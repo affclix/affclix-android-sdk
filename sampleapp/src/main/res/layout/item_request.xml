@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="?attr/selectableItemBackground">
+    <View android:id="@+id/view_endpoint_color"
+        android:layout_width="4dp" android:layout_height="match_parent"
+        android:background="#58A6FF"/>
+    <LinearLayout
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="10dp">
+        <LinearLayout
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView android:id="@+id/tv_req_endpoint"
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="#E6EDF3" android:textSize="12sp"
+                android:textStyle="bold" android:fontFamily="monospace"/>
+            <TextView android:id="@+id/tv_req_time"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:textColor="#8B949E" android:textSize="10sp" android:fontFamily="monospace"/>
+        </LinearLayout>
+        <TextView android:id="@+id/tv_req_params"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textColor="#8B949E" android:textSize="10sp"
+            android:fontFamily="monospace" android:paddingTop="4dp"
+            android:lineSpacingMultiplier="1.3"/>
+    </LinearLayout>
+</LinearLayout>

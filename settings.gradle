@@ -1,0 +1,3 @@
+rootProject.name = "affclix-android-sdk"
+include ':sdk'
+include ':sampleapp'

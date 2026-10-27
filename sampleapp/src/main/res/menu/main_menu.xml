@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/action_device_info"
+        android:title="Device Info"
+        app:showAsAction="never"/>
+    <item android:id="@+id/action_fire_deep_link"
+        android:title="Fire Deep Link"
+        app:showAsAction="never"/>
+    <item android:id="@+id/action_clear_data"
+        android:title="Clear All SDK Data"
+        app:showAsAction="never"/>
+</menu>
