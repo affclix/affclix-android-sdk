@@ -4,11 +4,13 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.net.Uri
 
 /**
  * SQLite-backed persistent event queue.
  *
- * Events that fail delivery (network down, timeout) are written here.
+ * Events and installs are written here before their first send, and other
+ * requests when delivery fails (network down, timeout).
  * [EventQueueWorker] (WorkManager, CONNECTED constraint) drains the queue
  * when connectivity is restored.
  *
@@ -49,7 +51,11 @@ internal class OfflineEventQueue(context: Context) {
 
     private val db: SQLiteDatabase = DbHelper(context).writableDatabase
 
-    fun enqueue(url: String, body: String? = null, method: String = "GET"): Boolean {
+    fun enqueue(url: String, body: String? = null, method: String = "GET"): Boolean =
+        enqueueForId(url, body, method) != null
+
+    /** Saves a request; its row ID, or null when the write failed. */
+    fun enqueueForId(url: String, body: String? = null, method: String = "GET"): Long? {
         trimIfFull()
         val cv = ContentValues().apply {
             put(COL_URL,     QueueCipher.encrypt(url))
@@ -58,7 +64,7 @@ internal class OfflineEventQueue(context: Context) {
             put(COL_RETRIES, 0)
             put(COL_TS,      System.currentTimeMillis())
         }
-        return db.insert(TABLE, null, cv) != -1L
+        return db.insert(TABLE, null, cv).takeIf { it != -1L }
     }
 
     fun peek(limit: Int = 50): List<QueuedEvent> {
@@ -104,6 +110,14 @@ internal class OfflineEventQueue(context: Context) {
 
     fun pruneExpired() {
         db.delete(TABLE, "$COL_RETRIES >= ?", arrayOf(MAX_RETRIES.toString()))
+    }
+
+    /**
+     * Drops saved events and installs, for a data deletion: sent afterwards, they
+     * would bring back what the user asked to erase. Other requests stay.
+     */
+    fun removeEvents(eventPath: String) {
+        peek(MAX_QUEUE).filter { Uri.parse(it.url).path == eventPath }.forEach { remove(it.id) }
     }
 
     fun size(): Int = db.rawQuery("SELECT COUNT(*) FROM $TABLE", null)

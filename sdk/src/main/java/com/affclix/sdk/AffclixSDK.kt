@@ -17,7 +17,7 @@ import org.json.JSONObject
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicBoolean
 
-// AffclixSDK — Android Attribution & Affiliate Tracking SDK v1.0.0
+// AffclixSDK — Android Attribution & Affiliate Tracking SDK v1.0.1
 //
 // Single entry-point for all tracking. Call [init] once from Application.onCreate().
 // All public methods are safe to call from any thread.
@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 // to the tracker. All endpoints answer JSON.
 object AffclixSDK {
 
-    const val SDK_VERSION  = "1.0.0"
+    const val SDK_VERSION  = "1.0.1"
     const val SDK_PLATFORM = "android"
 
     // Route paths — switched by useDedicatedMobileServer.
@@ -295,7 +295,7 @@ object AffclixSDK {
                 )
                 val prepared = prepareEvent(payload)
                 req = prepared
-                send(prepared)
+                sendDurably(prepared)
 
                 storage.storeTransactionId(event.campaignId, transactionId)
                 multiTouch.clearTouches()
@@ -330,7 +330,7 @@ object AffclixSDK {
             try {
                 val prepared = prepareEvent(buildEventPayload(eventName, params))
                 req = prepared
-                send(prepared)
+                sendDurably(prepared)
                 Logger.d("AffclixSDK", "Event: $eventName")
                 withContext(Dispatchers.Main) { callback?.onSuccess(eventName) }
             } catch (e: Exception) {
@@ -566,6 +566,8 @@ object AffclixSDK {
             if (!appKeyMode) payload["d"] = config.domainId
             val body = serialisePayload(payload)
             val req = Prepared(buildPostUrl(forgetPath, body), body)
+            // Sent afterwards, saved events would bring back what is being erased.
+            offlineQueue.removeEvents(eventPath)
             try {
                 val resp = network.postJson(req.url, body)
                 if (!resp.optBoolean("success", false)) {
@@ -824,7 +826,7 @@ object AffclixSDK {
      * A request built — and signed — once, so network retries and offline replays
      * resend exactly what was first sent. [body] is the JSON of a POST, null for GET.
      */
-    private class Prepared(val url: String, val body: String?) {
+    private class Prepared(val url: String, val body: String?, var queueId: Long? = null) {
         val method get() = if (body != null) "POST" else "GET"
     }
 
@@ -840,6 +842,24 @@ object AffclixSDK {
     private suspend fun send(req: Prepared) {
         if (req.body != null) network.postJson(req.url, req.body) else network.get(req.url)
     }
+
+    /**
+     * Sends a request that must survive the app being closed: it is saved before
+     * the first attempt and stays saved until the MMP has answered, so a process
+     * killed during the retries loses nothing. A resend is dropped by event_id.
+     */
+    private suspend fun sendDurably(req: Prepared) {
+        deliverDurably(
+            save = { if (config.enableOfflineQueue) offlineQueue.enqueueForId(req.url, req.body, req.method) else null },
+            remove = offlineQueue::remove,
+            isTransient = ::isTransient,
+            send = { send(req) },
+            onSaved = { req.queueId = it },
+        )
+    }
+
+    private fun isTransient(e: Exception): Boolean = e is java.io.IOException ||
+        (e is NetworkException && (e.statusCode == 429 || e.statusCode >= 500))
 
     // ── Install ───────────────────────────────────────────────────────────────
 
@@ -878,7 +898,7 @@ object AffclixSDK {
 
             val prepared = prepareEvent(payload)
             req = prepared
-            send(prepared)
+            sendDurably(prepared)
             Logger.d("AffclixSDK", "Install tracked: source=${referrer?.mediaSource} ctit=${ctit.category}")
             true
         } catch (e: Exception) {
@@ -895,10 +915,8 @@ object AffclixSDK {
      */
     private fun handleDeliveryFailure(e: Exception, type: String, req: Prepared): Boolean {
         Logger.e("AffclixSDK", "$type delivery failed: ${e.message}")
-        val transient = e is java.io.IOException ||
-            (e is NetworkException && (e.statusCode == 429 || e.statusCode >= 500))
-        if (!config.enableOfflineQueue || !transient) return false
-        val saved = offlineQueue.enqueue(req.url, req.body, req.method)
+        if (!config.enableOfflineQueue || !isTransient(e)) return false
+        val saved = req.queueId != null || offlineQueue.enqueue(req.url, req.body, req.method)
         if (saved) {
             EventQueueWorker.schedule(appContext)
             Logger.d("AffclixSDK", "$type queued for offline delivery")

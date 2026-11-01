@@ -10,7 +10,7 @@ Install, deep-link and in-app event attribution for Android apps, for
 - Install attribution from the Google Play Install Referrer, App Links / deep-link `click_id`, and the advertising ID
 - Deferred deep links, re-engagement and retargeting
 - In-app events, purchases (validated Play purchases), ad revenue
-- Offline queue (encrypted, delivered by WorkManager) with retry and back-off
+- Events and installs saved (encrypted) before the first send and delivered by WorkManager, with retry and back-off
 - Request signing (HMAC-SHA256), encrypted on-device storage
 - Consent: GDPR / CCPA erasure, Google consent mode (EU DMA), IAB TCF v2
 - Uninstall tracking through FCM
@@ -36,7 +36,7 @@ and the SDK to your app module:
 
 ```groovy
 dependencies {
-    implementation 'com.github.affclix:affclix-android-sdk:1.0.0'
+    implementation 'com.github.affclix:affclix-android-sdk:1.0.1'
 }
 ```
 
