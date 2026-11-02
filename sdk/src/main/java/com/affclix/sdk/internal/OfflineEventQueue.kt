@@ -27,6 +27,12 @@ internal class OfflineEventQueue(context: Context) {
 
     companion object {
         private const val DB_NAME    = "affclix_event_queue.db"
+
+        /** Removes the store and its contents, as for a new install. */
+        fun deleteStore(context: Context) {
+            context.deleteDatabase(DB_NAME)
+        }
+
         private const val DB_VERSION = 1
         private const val TABLE      = "event_queue"
 

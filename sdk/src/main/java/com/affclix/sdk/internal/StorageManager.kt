@@ -39,6 +39,9 @@ internal class StorageManager(private val context: Context) {
         private const val KEY_AD_PERSONALIZATION = "${PFX}ad_personalization"
         private const val KEY_PUSH_TOKEN       = "${PFX}push_token"
         private const val KEY_REPORTED_SESSION = "${PFX}reported_session"
+        private const val KEY_PACKAGE_INSTALL  = "${PFX}pkg_first_install"
+        private const val SECURE_FILE          = "affclix_secure"
+        private const val FALLBACK_FILE        = "affclix_fb"
         private const val CLICK_PFX            = "${PFX}click_"
         private const val CLICK_TS_PFX         = "${PFX}click_ts_"
         private const val IMP_PFX              = "${PFX}imp_"
@@ -48,6 +51,37 @@ internal class StorageManager(private val context: Context) {
     private val secure: SharedPreferences by lazy { createSecurePrefs() }
     private val plain: SharedPreferences  by lazy {
         context.getSharedPreferences("affclix_meta", Context.MODE_PRIVATE)
+    }
+
+    // ── Backup restore ─
+
+    /**
+     * Android Auto Backup can bring this SDK's files back into a new install: after
+     * a reinstall, or on a new phone. The first-launch flag would then hide the
+     * install from attribution, and the encrypted file cannot be read because its
+     * key stays in the old install's Keystore. Android gives every new install a
+     * new firstInstallTime and keeps it across updates, so data recorded under
+     * another one, or older than this one (from SDKs that did not record it), is
+     * not this install's and is dropped. Call before anything reads the storage.
+     *
+     * @return whether restored data was dropped
+     */
+    fun resetIfRestored(packageFirstInstall: Long): Boolean {
+        if (packageFirstInstall <= 0) return false
+        val recorded = plain.getLong(KEY_PACKAGE_INSTALL, -1L)
+        if (recorded == packageFirstInstall) return false
+
+        val installTime = getInstallTime()
+        val restored = recorded > 0 || (installTime != null && installTime < packageFirstInstall)
+        if (restored) {
+            // The raw files, not the encrypted wrapper, which cannot open them.
+            listOf(SECURE_FILE, FALLBACK_FILE).forEach {
+                context.getSharedPreferences(it, Context.MODE_PRIVATE).edit().clear().commit()
+            }
+            plain.edit().clear().commit()
+        }
+        plain.edit().putLong(KEY_PACKAGE_INSTALL, packageFirstInstall).commit()
+        return restored
     }
 
     // ── Visitor ID ────────────────────────────────────────────────────────────
@@ -329,7 +363,7 @@ internal class StorageManager(private val context: Context) {
      */
     fun clearIdentifiers() {
         secure.edit().clear().apply()
-        val keep = setOf(KEY_FIRST_LAUNCH, KEY_INSTALL_TIME, KEY_CONSENT)
+        val keep = setOf(KEY_FIRST_LAUNCH, KEY_INSTALL_TIME, KEY_CONSENT, KEY_PACKAGE_INSTALL)
         val editor = plain.edit()
         plain.all.keys.filter { it !in keep }.forEach { editor.remove(it) }
         editor.apply()
@@ -351,13 +385,13 @@ internal class StorageManager(private val context: Context) {
             .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
             .build()
         EncryptedSharedPreferences.create(
-            context, "affclix_secure", mk,
+            context, SECURE_FILE, mk,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
     } catch (e: Exception) {
         Logger.w("StorageManager", "EncryptedSharedPreferences unavailable, using plain prefs")
-        context.getSharedPreferences("affclix_fb", Context.MODE_PRIVATE)
+        context.getSharedPreferences(FALLBACK_FILE, Context.MODE_PRIVATE)
     }
 
     private fun serializeAttribution(d: AttributionData): String = JSONObject().apply {

@@ -4,6 +4,14 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [1.0.2] - 2026-11-02
+
+### Fixed
+
+- A reinstall, or a restore onto a new phone, is reported as an install. Android Auto Backup could restore the SDK's first-launch flag, so the install was never sent; data from another install is now dropped on start
+- A Google Play referrer with `utm_medium=organic`, which Play also sends for sideloads, no longer shows as media source `google` and non-organic
+- `trackingDomain` defaults to `mmp.affclix.org`, which serves the SDK routes
+
 ## [1.0.1] - 2026-11-01
 
 ### Fixed
@@ -26,5 +34,6 @@ First public release.
 - Client-side fraud signals
 - R8 full-mode rule for WorkManager's Room database (fixes a startup crash in minified apps)
 
+[1.0.2]: https://github.com/affclix/affclix-android-sdk/releases/tag/1.0.2
 [1.0.1]: https://github.com/affclix/affclix-android-sdk/releases/tag/1.0.1
 [1.0.0]: https://github.com/affclix/affclix-android-sdk/releases/tag/1.0.0

@@ -30,7 +30,7 @@ data class AffclixConfig(
     /** Numeric domain ID assigned in the Affclix dashboard (d= param). Used only when appKey is blank. */
     val domainId: String = "",
     /** Hostname of your Affclix tracking server, e.g. "track.example.com". */
-    val trackingDomain: String = "affclix.org",
+    val trackingDomain: String = "mmp.affclix.org",
 
     // ── Optional routing defaults ─────────────────────────────────────────────
     /** Default affiliate ID sent when an event doesn't specify one. */

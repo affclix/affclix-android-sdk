@@ -36,11 +36,16 @@ and the SDK to your app module:
 
 ```groovy
 dependencies {
-    implementation 'com.github.affclix:affclix-android-sdk:1.0.1'
+    implementation 'com.github.affclix:affclix-android-sdk:1.0.2'
 }
 ```
 
 ProGuard / R8 rules ship with the library (`consumer-rules.pro`); nothing to add.
+
+Android Auto Backup can restore the SDK's files into a new install. The SDK detects
+that and starts over, so the install is still reported. To keep its data out of
+backups as well, exclude `affclix_meta.xml`, `affclix_secure.xml` and `affclix_fb.xml`
+(`sharedpref` domain) and `affclix_event_queue.db` (`database` domain) in your backup rules.
 
 ## Quick start
 
@@ -49,7 +54,7 @@ ProGuard / R8 rules ship with the library (`consumer-rules.pro`); nothing to add
 AffclixSDK.init(application, AffclixConfig(
     appKey         = "<app key from the Affclix dashboard>",
     appSecret      = "<SDK signing secret>",   // optional; enables sig=
-    trackingDomain = "track.example.com",      // your Affclix tracking domain
+    trackingDomain = "mmp.affclix.org",        // shown in the Affclix console
     debug          = BuildConfig.DEBUG,
     callbacks = AffclixCallbacks(
         onConversionTracked = { r -> Log.d("Affclix", "conversion: ${r.transactionId}") },

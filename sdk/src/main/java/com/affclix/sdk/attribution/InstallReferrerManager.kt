@@ -34,6 +34,10 @@ internal class InstallReferrerManager(
     private val context: Context,
     private val storage: StorageManager
 ) {
+
+    private companion object {
+        val PLAY_ORGANIC_MEDIUMS = setOf("organic", "(not set)", "(not%20set)")
+    }
     private val TAG = "InstallReferrerManager"
 
     /**
@@ -198,11 +202,16 @@ internal class InstallReferrerManager(
      *
      * Priority: explicit utm_source → SAN (Google/Meta/TikTok click IDs) → direct
      */
-    private fun deriveMediaSource(
+    internal fun deriveMediaSource(
         params: Map<String, String>,
         gclid: String?, gbraid: String?, wbraid: String?,
         utmSource: String?, utmMedium: String?
     ): String {
+        // Google Play's own value when no campaign led to the install, sideloads
+        // included (utm_source=google-play&utm_medium=organic). A click ID outranks it.
+        val clickIdSent = sequenceOf(params["click_id"], gclid, gbraid, wbraid).any { !it.isNullOrBlank() }
+        if (!clickIdSent && utmMedium?.lowercase() in PLAY_ORGANIC_MEDIUMS) return "organic"
+
         // Explicit source wins
         if (!utmSource.isNullOrBlank()) {
             return normaliseSource(utmSource, utmMedium)

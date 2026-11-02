@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 // to the tracker. All endpoints answer JSON.
 object AffclixSDK {
 
-    const val SDK_VERSION  = "1.0.1"
+    const val SDK_VERSION  = "1.0.2"
     const val SDK_PLATFORM = "android"
 
     // Route paths — switched by useDedicatedMobileServer.
@@ -106,6 +106,10 @@ object AffclixSDK {
         Logger.d("AffclixSDK", "Initialising v$SDK_VERSION")
 
         storage         = StorageManager(appContext)
+        if (storage.resetIfRestored(packageFirstInstallTime())) {
+            OfflineEventQueue.deleteStore(appContext)
+            Logger.d("AffclixSDK", "Dropped data restored from a backup: this is a new install")
+        }
         network         = NetworkManager(config)
         deviceInfo      = DeviceInfoCollector(appContext)
         sessionManager  = SessionManager(storage, config)
@@ -588,6 +592,13 @@ object AffclixSDK {
     }
 
     @JvmStatic fun hasConsent() = storage.hasConsent()
+
+    /** When Android installed this app; kept across updates, new for a reinstall. 0 = unknown. */
+    private fun packageFirstInstallTime(): Long = try {
+        appContext.packageManager.getPackageInfo(appContext.packageName, 0).firstInstallTime
+    } catch (e: Exception) {
+        0L
+    }
 
     /**
      * Google consent mode (EU DMA), sent with every request. Pass null for "unknown".
