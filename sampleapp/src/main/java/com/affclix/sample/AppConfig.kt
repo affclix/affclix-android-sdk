@@ -40,7 +40,7 @@ object AppConfig {
 
     private val prodConfig = AffclixConfig(
         domainId              = "YOUR_DOMAIN_ID",
-        trackingDomain        = "track.example.com", // your Affclix tracking domain
+        trackingDomain        = "mmp.affclix.org",   // the SDK endpoint (the default)
         defaultCampaignId     = "YOUR_CAMPAIGN_ID",
         defaultAffiliateId    = "YOUR_AFFILIATE_ID",
         consentRequired       = true,

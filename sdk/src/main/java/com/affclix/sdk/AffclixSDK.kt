@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 // to the tracker. All endpoints answer JSON.
 object AffclixSDK {
 
-    const val SDK_VERSION  = "1.0.2"
+    const val SDK_VERSION  = "1.0.3"
     const val SDK_PLATFORM = "android"
 
     // Route paths — switched by useDedicatedMobileServer.

@@ -4,6 +4,12 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [1.0.3] - 2026-11-03
+
+### Documentation
+
+- `trackingDomain`: leave it at the default, `mmp.affclix.org`. Your Affclix subdomain and custom tracking domains serve clicks and branded links, not SDK requests, so an app pointed at one of them could not report. The sample app no longer suggests a tracking domain. No behaviour change
+
 ## [1.0.2] - 2026-11-02
 
 ### Fixed
@@ -34,6 +40,7 @@ First public release.
 - Client-side fraud signals
 - R8 full-mode rule for WorkManager's Room database (fixes a startup crash in minified apps)
 
+[1.0.3]: https://github.com/affclix/affclix-android-sdk/releases/tag/1.0.3
 [1.0.2]: https://github.com/affclix/affclix-android-sdk/releases/tag/1.0.2
 [1.0.1]: https://github.com/affclix/affclix-android-sdk/releases/tag/1.0.1
 [1.0.0]: https://github.com/affclix/affclix-android-sdk/releases/tag/1.0.0

@@ -29,7 +29,13 @@ data class AffclixConfig(
     val appSecret: String = "",
     /** Numeric domain ID assigned in the Affclix dashboard (d= param). Used only when appKey is blank. */
     val domainId: String = "",
-    /** Hostname of your Affclix tracking server, e.g. "track.example.com". */
+    /**
+     * Host that receives the SDK's requests. Leave the default, "mmp.affclix.org":
+     * every app reports there, whatever domain its links use. Your Affclix
+     * subdomain (acme.affclix.org) and custom tracking domains (track.yourbrand.com)
+     * serve clicks and branded links, not SDK traffic. Change it only for a staging
+     * or self-hosted endpoint.
+     */
     val trackingDomain: String = "mmp.affclix.org",
 
     // ── Optional routing defaults ─────────────────────────────────────────────
