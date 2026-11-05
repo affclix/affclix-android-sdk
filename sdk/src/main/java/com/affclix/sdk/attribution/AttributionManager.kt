@@ -76,6 +76,12 @@ internal class AttributionManager(
      * deep_link_value (or deep_link) is the advertiser's routing payload, surfaced as
      * [DeepLinkResult.deepLinkValue] — the same field a deferred deep link fills.
      */
+    companion object {
+        /** A usable af_web_id: trimmed, at most 128 characters, else null. */
+        internal fun webVisitorIdOf(raw: String?): String? =
+            raw?.trim()?.takeIf { it.isNotEmpty() && !it.startsWith("{") }?.take(128)
+    }
+
     fun resolveDeepLink(uri: Uri, callback: (DeepLinkResult) -> Unit) {
         Logger.d(TAG, "Resolving deep link: $uri")
 
@@ -113,7 +119,7 @@ internal class AttributionManager(
         }
 
         val customParams = params.filterKeys { key ->
-            key !in setOf("click_id", "clickid", "_ac_cid", "_ac_vid",
+            key !in setOf("click_id", "clickid", "_ac_cid", "_ac_vid", "af_web_id",
                 "campaign_id", "c", "affiliate_id", "a", "aff_id",
                 "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content")
         }
@@ -129,7 +135,8 @@ internal class AttributionManager(
             customParams = customParams,
             isDeferredDeepLink = false,
             deepLinkValue = params["deep_link_value"]?.takeIf { it.isNotBlank() }
-                ?: params["deep_link"]?.takeIf { it.isNotBlank() }
+                ?: params["deep_link"]?.takeIf { it.isNotBlank() },
+            webVisitorId = webVisitorIdOf(params["af_web_id"])
         )
 
         callback(result)

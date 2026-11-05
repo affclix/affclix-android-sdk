@@ -4,6 +4,17 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [1.0.4] - 2026-11-05
+
+### Fixed
+
+- `app_version` (the app's `versionName`) is sent with every request. It was collected but never sent, so app-version validation rules and reports had nothing for Android
+- In-app events carry `is_rooted` and `is_emulator`, as installs and conversions already did, so validation rules can check events too. The checks run once per process and do not touch the install-velocity counter
+
+### Added
+
+- Web + app journeys: the `af_web_id` of an App Link that opens the app is sent as `web_visitor_id` with the `deep_link` and `app_open` events, and with the install when the link opened the first launch. `DeepLinkResult.webVisitorId` exposes it
+
 ## [1.0.3] - 2026-11-03
 
 ### Documentation

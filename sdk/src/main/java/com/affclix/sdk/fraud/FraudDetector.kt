@@ -44,6 +44,18 @@ internal class FraudDetector(
     private val launchedAt = System.currentTimeMillis()
     private val previousSessionStart = storage.getLastSessionStartTime()
 
+    // Root and emulator checks do not change while the process runs; worked out
+    // once, on first use, for the flags sent with every in-app event.
+    private val cachedDeviceFlags: Map<String, Any> by lazy {
+        mapOf(
+            "is_emulator" to if (detectEmulator().isNotEmpty()) 1 else 0,
+            "is_rooted"   to if (detectRoot().isNotEmpty()) 1 else 0,
+        )
+    }
+
+    /** is_emulator / is_rooted (0 / 1) without the velocity counters [assess] advances. */
+    fun deviceFlags(): Map<String, Any> = cachedDeviceFlags
+
     // ── Public entry point ────────────────────────────────────────────────────
 
     fun assess(): FraudAssessment {

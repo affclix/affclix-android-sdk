@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 // to the tracker. All endpoints answer JSON.
 object AffclixSDK {
 
-    const val SDK_VERSION  = "1.0.3"
+    const val SDK_VERSION  = "1.0.4"
     const val SDK_PLATFORM = "android"
 
     // Route paths — switched by useDedicatedMobileServer.
@@ -55,6 +55,8 @@ object AffclixSDK {
      */
     private const val FIRST_ACTIVITY_WAIT_MS = 2_000L
     private val firstActivity = CompletableDeferred<Unit>()
+    /** af_web_id of the link that opened the first launch, sent with the install. */
+    @Volatile private var launchWebVisitorId: String? = null
 
     private val initialized  = AtomicBoolean(false)
     private val sdkScope     = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -435,7 +437,13 @@ object AffclixSDK {
     @JvmStatic fun trackAppOpen(sourceIntent: Intent? = null) {
         guardInit() ?: return
         val params = buildMap<String, Any> {
-            sourceIntent?.data?.let { put("deep_link_url", it.toString()) }
+            sourceIntent?.data?.let { uri ->
+                put("deep_link_url", uri.toString())
+                if (uri.isHierarchical) {
+                    AttributionManager.webVisitorIdOf(uri.getQueryParameter("af_web_id"))
+                        ?.let { put("web_visitor_id", it) }
+                }
+            }
         }
         logEvent(AffclixEvent.APP_OPEN, params)
     }
@@ -454,6 +462,8 @@ object AffclixSDK {
             // Log as deep_link event for reattribution tracking
             logEvent(AffclixEvent.DEEP_LINK, buildMap {
                 put("deep_link_url", uri.toString())
+                // Joins this app open to the web visit that led to it.
+                result.webVisitorId?.let { put("web_visitor_id", it) }
                 result.utmSource?.let { put("utm_source", it) }
                 result.utmCampaign?.let { put("utm_campaign", it) }
             })
@@ -658,6 +668,7 @@ object AffclixSDK {
             "v"           to SDK_VERSION,
             // App
             "app_id"      to device.appPackage,
+            "app_version" to device.appVersion.ifBlank { null },
             // Session
             "vid"         to storage.getVisitorId(),
             "sid"         to session.id,
@@ -828,6 +839,9 @@ object AffclixSDK {
         // twice. An event_id in params (the app's own key) overrides it.
         put("event_id", storage.generateUUID())
         storage.getClickId(null)?.let { put("click_id", it) }
+        // Rooted / emulator flags on every event, so the app's validation rules
+        // can check in-app events too, not only the install.
+        putAll(fraudDetector.deviceFlags())
         params.forEach { (k, v) -> put(k, v) }
     }
 
@@ -906,6 +920,7 @@ object AffclixSDK {
             payload["ctit_category"] = ctit.category.name.lowercase()
             payload.putAll(fraudDetector.assess().toPayloadMap())
             payload["click_id"] = storage.getClickId(null)
+            launchWebVisitorId?.let { payload["web_visitor_id"] = it }
 
             val prepared = prepareEvent(payload)
             req = prepared
@@ -1043,6 +1058,7 @@ object AffclixSDK {
             // is sent (trackInstall waits for this); handleDeepLink comes later from the app.
             if (!firstActivity.isCompleted) {
                 a.intent?.data?.takeIf { it.isHierarchical }?.let { uri ->
+                    launchWebVisitorId = AttributionManager.webVisitorIdOf(uri.getQueryParameter("af_web_id"))
                     (uri.getQueryParameter("click_id") ?: uri.getQueryParameter("clickid") ?: uri.getQueryParameter("_ac_cid"))
                         ?.takeIf { it.isNotBlank() }
                         ?.let { storage.storeClickId("deeplink", it, config.clickExpiryDays) }

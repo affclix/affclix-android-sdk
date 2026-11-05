@@ -36,7 +36,7 @@ and the SDK to your app module:
 
 ```groovy
 dependencies {
-    implementation 'com.github.affclix:affclix-android-sdk:1.0.3'
+    implementation 'com.github.affclix:affclix-android-sdk:1.0.4'
 }
 ```
 

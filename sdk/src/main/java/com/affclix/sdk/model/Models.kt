@@ -77,6 +77,8 @@ data class DeepLinkResult(
     val isDeferredDeepLink: Boolean = false,
     /** Raw deep_link_value= from the referrer — the advertiser's routing payload. */
     val deepLinkValue: String? = null,
+    /** af_web_id= — the web analytics visitor who tapped the link (web + app journeys). */
+    val webVisitorId: String? = null,
 )
 
 // ─────────────────────────────────────────────────────────────────────────────
