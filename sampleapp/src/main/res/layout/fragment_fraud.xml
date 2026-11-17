@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#0D1117">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:background="#161B22">
+        <TextView android:id="@+id/tv_fraud_score_label"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Fraud Score: --"
+            android:textColor="#E6EDF3" android:textSize="13sp" android:textStyle="bold"
+            android:paddingBottom="6dp"/>
+        <ProgressBar android:id="@+id/progress_fraud_score"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent" android:layout_height="12dp"
+            android:max="100" android:progress="0"/>
+    </LinearLayout>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+            <Button android:id="@+id/btn_fraud_run"         android:layout_width="wrap_content" android:layout_height="40dp" android:layout_marginEnd="6dp" android:text="Run Assessment" android:textAllCaps="false" android:textColor="#58A6FF" android:backgroundTint="#21262D"/>
+            <Button android:id="@+id/btn_fraud_ctit"        android:layout_width="wrap_content" android:layout_height="40dp" android:layout_marginEnd="6dp" android:text="CTIT Table"     android:textAllCaps="false" android:textColor="#58A6FF" android:backgroundTint="#21262D"/>
+            <Button android:id="@+id/btn_fraud_fingerprint" android:layout_width="wrap_content" android:layout_height="40dp" android:layout_marginEnd="6dp" android:text="Fingerprint"    android:textAllCaps="false" android:textColor="#58A6FF" android:backgroundTint="#21262D"/>
+            <Button android:id="@+id/btn_fraud_payload"     android:layout_width="wrap_content" android:layout_height="40dp" android:layout_marginEnd="6dp" android:text="CH Columns"     android:textAllCaps="false" android:textColor="#58A6FF" android:backgroundTint="#21262D"/>
+            <Button android:id="@+id/btn_fraud_clear"       android:layout_width="wrap_content" android:layout_height="40dp" android:text="Clear"           android:textAllCaps="false" android:textColor="#8B949E" android:backgroundTint="#21262D"/>
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#30363D"/>
+
+    <ScrollView android:id="@+id/scroll_fraud"
+        android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1" android:padding="12dp" android:fillViewport="true">
+        <TextView android:id="@+id/tv_fraud_log"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textColor="#E6EDF3" android:textSize="11sp"
+            android:fontFamily="monospace" android:lineSpacingMultiplier="1.4"/>
+    </ScrollView>
+</LinearLayout>

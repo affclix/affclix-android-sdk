@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#0D1117">
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+            <Button android:id="@+id/btn_attr_show"        android:layout_width="wrap_content" android:layout_height="40dp" android:layout_marginEnd="6dp" android:text="Current Data"    android:textAllCaps="false" android:textColor="#58A6FF" android:backgroundTint="#21262D"/>
+            <Button android:id="@+id/btn_attr_referrer"    android:layout_width="wrap_content" android:layout_height="40dp" android:layout_marginEnd="6dp" android:text="Install Referrer" android:textAllCaps="false" android:textColor="#58A6FF" android:backgroundTint="#21262D"/>
+            <Button android:id="@+id/btn_attr_multitouch"  android:layout_width="wrap_content" android:layout_height="40dp" android:layout_marginEnd="6dp" android:text="Multi-Touch"     android:textAllCaps="false" android:textColor="#58A6FF" android:backgroundTint="#21262D"/>
+            <Button android:id="@+id/btn_attr_deeplink"    android:layout_width="wrap_content" android:layout_height="40dp" android:layout_marginEnd="6dp" android:text="Deep Links"      android:textAllCaps="false" android:textColor="#58A6FF" android:backgroundTint="#21262D"/>
+            <Button android:id="@+id/btn_attr_retarget"    android:layout_width="wrap_content" android:layout_height="40dp" android:layout_marginEnd="6dp" android:text="Retargeting"     android:textAllCaps="false" android:textColor="#58A6FF" android:backgroundTint="#21262D"/>
+            <Button android:id="@+id/btn_attr_first_touch" android:layout_width="wrap_content" android:layout_height="40dp" android:layout_marginEnd="6dp" android:text="First/Last Touch" android:textAllCaps="false" android:textColor="#58A6FF" android:backgroundTint="#21262D"/>
+            <Button android:id="@+id/btn_attr_clear"       android:layout_width="wrap_content" android:layout_height="40dp" android:text="Clear"           android:textAllCaps="false" android:textColor="#8B949E" android:backgroundTint="#21262D"/>
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#30363D"/>
+
+    <ScrollView android:id="@+id/scroll_attr"
+        android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1" android:padding="12dp" android:fillViewport="true">
+        <TextView android:id="@+id/tv_attr_log"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textColor="#E6EDF3" android:textSize="11sp"
+            android:fontFamily="monospace" android:lineSpacingMultiplier="1.4"/>
+    </ScrollView>
+</LinearLayout>

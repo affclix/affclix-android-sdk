@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#0D1117">
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+            <Button android:id="@+id/btn_track_impression"   android:layout_width="wrap_content" android:layout_height="40dp" android:layout_marginEnd="6dp" android:text="Impression"   android:textAllCaps="false" android:textColor="#58A6FF" android:backgroundTint="#21262D"/>
+            <Button android:id="@+id/btn_track_click"        android:layout_width="wrap_content" android:layout_height="40dp" android:layout_marginEnd="6dp" android:text="Click"        android:textAllCaps="false" android:textColor="#58A6FF" android:backgroundTint="#21262D"/>
+            <Button android:id="@+id/btn_track_conversion"   android:layout_width="wrap_content" android:layout_height="40dp" android:layout_marginEnd="6dp" android:text="Conversion"   android:textAllCaps="false" android:textColor="#58A6FF" android:backgroundTint="#21262D"/>
+            <Button android:id="@+id/btn_track_vta"          android:layout_width="wrap_content" android:layout_height="40dp" android:layout_marginEnd="6dp" android:text="VTA"          android:textAllCaps="false" android:textColor="#58A6FF" android:backgroundTint="#21262D"/>
+            <Button android:id="@+id/btn_track_purchase"     android:layout_width="wrap_content" android:layout_height="40dp" android:layout_marginEnd="6dp" android:text="Purchase"     android:textAllCaps="false" android:textColor="#58A6FF" android:backgroundTint="#21262D"/>
+            <Button android:id="@+id/btn_track_registration" android:layout_width="wrap_content" android:layout_height="40dp" android:layout_marginEnd="6dp" android:text="Registration" android:textAllCaps="false" android:textColor="#58A6FF" android:backgroundTint="#21262D"/>
+            <Button android:id="@+id/btn_track_custom"       android:layout_width="wrap_content" android:layout_height="40dp" android:layout_marginEnd="6dp" android:text="Custom Event" android:textAllCaps="false" android:textColor="#58A6FF" android:backgroundTint="#21262D"/>
+            <Button android:id="@+id/btn_track_consent"      android:layout_width="wrap_content" android:layout_height="40dp" android:layout_marginEnd="6dp" android:text="GDPR Queue"   android:textAllCaps="false" android:textColor="#58A6FF" android:backgroundTint="#21262D"/>
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="8dp"
+        android:paddingBottom="4dp">
+        <Button android:id="@+id/btn_track_run_all"
+            android:layout_width="0dp" android:layout_height="40dp" android:layout_weight="1"
+            android:text="Run All" android:textAllCaps="false"
+            android:backgroundTint="#3B8BD4" android:textColor="#0D1117"
+            android:layout_marginEnd="4dp"/>
+        <Button android:id="@+id/btn_track_clear"
+            android:layout_width="0dp" android:layout_height="40dp" android:layout_weight="1"
+            android:text="Clear" android:textAllCaps="false"
+            android:backgroundTint="#21262D" android:textColor="#8B949E"/>
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#30363D"/>
+
+    <ScrollView android:id="@+id/scroll_track"
+        android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1" android:padding="12dp" android:fillViewport="true">
+        <TextView android:id="@+id/tv_track_log"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textColor="#E6EDF3" android:textSize="11sp"
+            android:fontFamily="monospace" android:lineSpacingMultiplier="1.4"/>
+    </ScrollView>
+</LinearLayout>

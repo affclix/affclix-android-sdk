@@ -1,0 +1,57 @@
+# Built output
+build/
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Gradle
+.gradle/
+local.properties
+
+# Android Studio / IntelliJ
+*.iml
+.idea/
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/gradle.xml
+.idea/assetWizardSettings.xml
+.idea/dictionaries
+.idea/libraries
+.idea/caches
+.idea/modules.xml
+.idea/*.iml
+.DS_Store
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Keystore / signing
+*.jks
+*.keystore
+keystore.properties
+release-signing.properties
+
+# Log / crash
+*.log
+hs_err_pid*
+
+# NDK
+.externalNativeBuild/
+.cxx/
+
+# Generated sources (safe to rebuild)
+**/generated/
+**/intermediates/
+**/outputs/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Kotlin
+.kotlin/

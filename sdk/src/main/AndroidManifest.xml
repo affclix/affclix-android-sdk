@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Required: SDK needs internet to deliver events -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Required: check connectivity before attempting delivery -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Android 13+ (API 33): explicit declaration needed to read GAID -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+
+    <!--
+        No INSTALL_REFERRER broadcast receiver: Google Play stopped sending that
+        broadcast in March 2020, and an exported receiver accepts a fake referrer
+        (and its click ID) from any app on the device. The referrer comes from the
+        Play Install Referrer API (InstallReferrerManager) only.
+    -->
+
+</manifest>

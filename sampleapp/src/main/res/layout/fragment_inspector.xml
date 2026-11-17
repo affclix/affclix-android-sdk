@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#0D1117">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:paddingHorizontal="12dp"
+        android:gravity="center_vertical"
+        android:background="#161B22">
+        <TextView android:id="@+id/tv_request_count"
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="0 requests"
+            android:textColor="#8B949E" android:textSize="12sp" android:fontFamily="monospace"/>
+        <Button android:id="@+id/btn_inspector_clear"
+            android:layout_width="wrap_content" android:layout_height="36dp"
+            android:text="Clear" android:textAllCaps="false"
+            android:backgroundTint="#21262D" android:textColor="#8B949E" android:textSize="12sp"/>
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#30363D"/>
+
+    <TextView android:id="@+id/tv_inspector_empty"
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:gravity="center" android:textAlignment="center"
+        android:text="No requests yet.\nTap buttons in the Track tab\nto see requests here."
+        android:textColor="#8B949E" android:textSize="14sp"/>
+
+    <androidx.recyclerview.widget.RecyclerView android:id="@+id/rv_requests"
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:visibility="gone"/>
+</LinearLayout>
